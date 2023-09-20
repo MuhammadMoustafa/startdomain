@@ -1,3 +1,23 @@
 # startdomain
 
-A django package to create an app aligns with Django API Domains
+A django app to create apps aligned with [Django API Domains](https://phalt.github.io/django-api-domains/)
+
+## Usage
+
+1- Install the library
+
+    poetry add startdomain
+    or:
+    pip install startdomain
+
+2- add the app to your settings.py
+
+    INSTALLED_APPS = [
+        ...
+        'startdomain',
+        ...
+    ]
+
+3- run the following command
+
+    python manage.py startdomain <some_app>

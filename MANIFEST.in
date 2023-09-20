@@ -1,2 +1,4 @@
-include app/templates/*
-recursive-include app/static *
+include README.rst
+include setup.py
+include MANIFEST.in
+include startdomain
