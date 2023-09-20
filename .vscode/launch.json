@@ -1,0 +1,48 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python: Django",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\manage.py",
+      // "args": ["runserver"],
+      "args": ["startdomain", "app"],
+      "django": true,
+      "justMyCode": true
+    },
+    {
+      "name": "Python: Test Token",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}\\test_token.py",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    },
+    // {
+    //   "name": "WAE Server",
+    //   "type": "python",
+    //   "request": "launch",
+    //   "python": "${workspaceFolder}/.venv/Scripts/python",
+    //   // "cwd": "${workspaceFolder}",
+    //   // "module": "uvicorn",
+    //   "justMyCode": false,
+    //   "args": [
+    //     // "src.main:app",
+    //     "--host",
+    //     "0.0.0.0",
+    //     "--port",
+    //     "8000",
+    //     "--reload"
+    //   ]
+    // }
+  ]
+}
