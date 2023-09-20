@@ -10,7 +10,7 @@ SECRET_KEY = 'django-insecure-7zub%(g44=m(emembmu^vwhm#a%0*@ctfk@n$c3%zi9wiz@5++
 DEBUG = True
 
 INSTALLED_APPS = [
-    'start_domain',
+    'startdomain',
 ]
 
 MIDDLEWARE = [
