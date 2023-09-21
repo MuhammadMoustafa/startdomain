@@ -5,6 +5,7 @@ description = ""
 authors = ["MuhammadMoustafa <engmuhammadmoustafa@gmail.com>"]
 readme = "README.md"
 packages = [{include = "startdomain"}]
+url = https://github.com/MuhammadMoustafa/startdomain
 
 [tool.poetry.dependencies]
 python = "^3.10"
