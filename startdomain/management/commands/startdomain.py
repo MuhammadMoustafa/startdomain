@@ -1,75 +1,96 @@
 from pathlib import Path
-from django.core.management.base import BaseCommand
+import shutil
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
-
-script_dir = Path(__file__).resolve().parent
-
-base_folder = script_dir / Path('./templates')
-
-files_dict = {
-    '__init__.py': base_folder / Path('__init__.py'),
-    'admin.py': base_folder / Path('admin.py'),
-    'apis.py': base_folder / Path('apis.py'),
-    'models.py': base_folder / Path('models.py'),
-    'serializers.py': base_folder / Path('serializers.py'),
-    'apis.py': base_folder / Path('apis.py'),
-    'urls.py': base_folder / Path('urls.py'),
-}
 
 class Command(BaseCommand):
 
-    help = 'Creates a Django app structure'
-    
+    help = 'Creates Django apps by copying a base structure'
+
     def add_arguments(self, parser):
-        parser.add_argument('app_names', nargs='+', type=str, help='List of app names to create')
-        
+        parser.add_argument('app_names', nargs='+', type=str,
+                            help='List of app names to create')
+        parser.add_argument('-f', '--force', action='store_true', help='Overwrite existing app folder')
+
+
     def handle(self, *args, **options):
         app_names = options['app_names']
-        
         if not app_names:
-            self.stdout.write(self.style.ERROR('No app names provided. Please provide at least one app name.'))
+            self.print_error('No app names provided')
             return
+
+        base_folder = self.get_base_folder()
+        force = 'force' in options
         
         for app_name in app_names:
-            app_name_capital = app_name.capitalize()
-            app_name_snake = app_name.lower()
-            
-            print(f"Creating app: {app_name}")
-            
-            # Use BASE_DIR from Django settings to construct the app folder path
-            app_folder = Path(settings.BASE_DIR) / app_name
-            app_folder.mkdir(parents=True, exist_ok=True)  # Create the app folder if it doesn't exist
-            migration_folder = app_folder / 'migrations'
-            # Dictionary to hold the file content with placeholders
-            content_dict = {
-                '__init__.py': '',
-                'admin.py': '',
-                'apis.py': '',
-                'models.py': '',
-                'serializers.py': '',
-                'urls.py': '',
-            }
-            
-            # Read content from files and replace placeholders with app_name
-            for filename, rel_path in files_dict.items():
-                full_path = Path(settings.BASE_DIR) / rel_path
-                file_content = full_path.read_text()
-                file_content = file_content.replace('Template', app_name_capital)
-                file_content = file_content.replace('template', app_name_snake)
-                content_dict[filename] = file_content
-            
-            # Loop over the dictionary keys and create files with content
-            for filename, content in content_dict.items():
-                file_path = app_folder / filename
-                with open(file_path, 'w') as file:
-                    file.write(content)
-                    
-            self.stdout.write(self.style.SUCCESS(
-                f'App created successfully at "{app_folder}"'
-            ))
+            self.create_app(app_name, base_folder, force)
 
-            migration_folder.mkdir(parents=True, exist_ok=True)
-            with open(migration_folder / '__init__.py', 'w') as file:
-                file.write('')
-            
+    def get_base_folder(self) -> Path:
+        """Get base folder path from settings"""
+        base_folder = getattr(settings, 'SNIPPET_FOLDER', None)
+        if not base_folder:
+            print('SNIPPET_FOLDER not defined in settings. Using default location.')
+            base_folder = Path(__file__).resolve().parent / Path('templates')
+        return Path(base_folder)
+
+    def create_app(self, app_name: Path, base_folder: Path, force:bool=False) -> None:
+        """Create an app by copying base folder"""
+        self.stdout.write(self.style.NOTICE(
+            f"Creating app: {app_name}"
+        ))
+        app_folder = self.get_app_folder(app_name)
+
+        # Check if app folder already exists
+        if app_folder.exists():
+            if force:
+                shutil.rmtree(app_folder)
+            else:
+                self.stdout.write(self.style.ERROR(
+                    f'App folder {app_folder} already exists. Use -f to overwrite.'
+                ))
+                return
+
+        self.copy_files(base_folder, app_folder, app_name)
+        
+        # Add __init__.py folders
+        init_file = app_folder / '__init__.py'
+        init_file.touch()
+
+        # Add migrations folder
+        migrations_dir = app_folder / 'migrations'
+        migrations_dir.mkdir(parents=True, exist_ok=True)
+
+        # Add empty __init__.py file in migrations
+        init_file = migrations_dir / '__init__.py'
+        init_file.touch()
+
+        self.stdout.write(self.style.SUCCESS(
+            f'App created successfully at "{app_folder}"'
+        ))
+
+    def get_app_folder(self, app_name: Path):
+        """Construct app folder path"""
+        app_folder = settings.BASE_DIR / app_name
+        app_folder.mkdir(parents=True, exist_ok=True)
+        return app_folder
+
+    def copy_files(self, base_folder: Path, app_folder: Path, app_name: str):
+        """Copy files from base folder to app folder"""
+        for path in base_folder.iterdir():
+            dest_path = app_folder / path.name
+            if path.is_file():
+                content = self.process_file(path, app_name)
+                dest_path.write_text(content)
+            elif path.is_dir():
+                dest_path.mkdir(parents=True, exist_ok=True)
+
+    def process_file(self, path, app_name):
+        """Process file content template replacements"""
+        content = path.read_text()
+        content = content.replace('Template', app_name.capitalize())
+        content = content.replace('template', app_name.lower())
+        return content
+
+    def print_error(self, message):
+        self.stdout.write(self.style.ERROR(message))

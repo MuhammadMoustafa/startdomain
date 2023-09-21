@@ -21,3 +21,10 @@ A django app to create apps aligned with [Django API Domains](https://phalt.gith
 3- run the following command
 
     python manage.py startdomain <some_app>
+
+## Options and Flags
+
+- **settings.py options:**
+  - SNIPPTET_FOLDER: Override the default template folder
+- **command line flags:**
+  - -f: remove the app if exists
