@@ -81,6 +81,8 @@ class Command(BaseCommand):
             dest_path = app_folder / path.name
             if path.is_file():
                 content = self.process_file(path, app_name)
+                dest_path.parent.mkdir(parents=True, exist_ok=True)
+                dest_path.touch()
                 dest_path.write_text(content)
             elif path.is_dir():
                 dest_path.mkdir(parents=True, exist_ok=True)
