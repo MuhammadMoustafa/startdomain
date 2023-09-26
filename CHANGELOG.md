@@ -8,6 +8,6 @@
     - Refactor code base
     - Add option to override the base template path
     - add -f flag to override the app if exists
-0.2.2:
+0.2.3:
     - add apps.py
     - bug fixes
