@@ -1,11 +1,17 @@
 [tool.poetry]
 name = "startdomain"
-version = "0.2.0"
+version = "0.2.1"
 description = ""
 authors = ["MuhammadMoustafa <engmuhammadmoustafa@gmail.com>"]
+maintainers = ["MuhammadMoustafa <engmuhammadmoustafa@gmail.com>"]
 readme = "README.md"
+homepage = "https://pypi.org/project/startdomain/"
+repository  = "https://github.com/MuhammadMoustafa/startdomain/"
+documentation = "https://github.com/MuhammadMoustafa/startdomain#readme"
+keywords = ["django", "manage.py"]
+include = ["CHANGELOG.md"]
+
 packages = [{include = "startdomain"}]
-url = https://github.com/MuhammadMoustafa/startdomain
 
 [tool.poetry.dependencies]
 python = "^3.10"
