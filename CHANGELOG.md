@@ -7,7 +7,9 @@
 0.2.0:
     - Refactor code base
     - Add option to override the base template path
-    - add -f flag to override the app if exists
+    - Add -f flag to override the app if exists
 0.2.3:
-    - add apps.py
-    - bug fixes
+    - Add apps.py
+    - Bug fixes
+0.2.4:
+    - Register all non "many to many" fields in admin website
