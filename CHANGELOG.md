@@ -18,3 +18,5 @@
   - Upgrade to django 5
   - Fix CHANGELOG.md file format
   - Deal with apps named in snake_case and camelCase
+- 0.2.6:
+  - Add Test Class
